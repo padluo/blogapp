@@ -359,7 +359,7 @@ if __name__ == '__main__':
 
 
     # 创建实例
-    async def test():
+    async def test(loop):
         await create_pool(loop=loop, host='localhost', port=3306,
                           user='root', password='Aa123456', db='test')
         user = User(id=8, username='sly', email='slysly759@gmail.com',
@@ -372,7 +372,7 @@ if __name__ == '__main__':
 
     # 创建异步事件的句柄
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(test())
+    loop.run_until_complete(asyncio.wait([test(loop)]))
     loop.close()
     if loop.is_closed():
         sys.exit(0)
