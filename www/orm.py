@@ -161,6 +161,8 @@ class TextField(Field):
 任何继承自Model的类，都会自动通过ModelMetaclass扫描映射关系，并存储到自身
 的类属性。
 """
+
+
 class ModelMetaclass(type):
     def __new__(cls, name, bases, attrs):
         """
@@ -348,31 +350,3 @@ class Model(dict, metaclass=ModelMetaclass):
         if rows != 1:
             logging.warning(
                 'failed to remove by primary key: affected rows: %s' % rows)
-
-
-if __name__ == '__main__':
-    class User(Model):
-        id = IntegerField('id', primary_key=True)
-        username = StringField('username')
-        email = StringField('email')
-        password = StringField('password')
-
-
-    # 创建实例
-    async def test():
-        await create_pool(loop=loop, host='localhost', port=3306,
-                          user='root', password='Aa123456', db='test')
-        user = User(id=8, username='sly', email='slysly759@gmail.com',
-                    password='fuckblog')
-        await user.save()
-        r = await User.find(8)
-        logging.info('r = %s' % r)
-        await destroy_pool()
-
-
-    # 创建异步事件的句柄
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(test())
-    loop.close()
-    if loop.is_closed():
-        sys.exit(0)
